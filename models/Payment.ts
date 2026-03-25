@@ -1,7 +1,7 @@
 import mongoose,  { Schema , model , models  } from "mongoose";
 
 export interface IPayment {
-  customerId: Schema.Types.ObjectId;
+  customerId: mongoose.Types.ObjectId;
   amount: number;
   date: Date;
 }
