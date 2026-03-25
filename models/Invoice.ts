@@ -1,13 +1,13 @@
-import mongoose ,{ Schema , model, models } from "mongoose";
+import mongoose ,{ Schema , model, models, Document } from "mongoose";
 
-export interface IInvoice {
+export interface IInvoice extends Document {
   customerId: mongoose.Types.ObjectId;
   amount: number;
   description: string;
   date: Date;
 }
 
-const InvoiceSchema = new Schema<IInvoice>({
+const InvoiceSchema = new Schema({
   customerId: { type: Schema.Types.ObjectId, ref: "Customer", required: true },
   amount: { type: Number, required: true },
   description: { type: String },
@@ -16,4 +16,6 @@ const InvoiceSchema = new Schema<IInvoice>({
 },
 { timestamps: true });
 
-export const Invoice = models.Invoice || model<IInvoice>("Invoice", InvoiceSchema);
+const Invoice = models.Invoice || model("Invoice", InvoiceSchema);
+
+export default Invoice;
