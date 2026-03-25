@@ -2,7 +2,7 @@
 import Link from "next/link";
 
 async function getCustomers() {
-const res = await fetch(`${process.env.NEXT_PUBLIC_SITE_URL}/api/customers`);
+const res = await fetch(`/api/customers`, { cache: "no-store" });
   if (!res.ok) return [];
   const data = await res.json();
   return Array.isArray(data) ? data : [];
