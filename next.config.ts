@@ -1,7 +1,9 @@
 import type { NextConfig } from "next";
 
-const nextConfig: NextConfig = {
-  /* config options here */
+const nextConfig = {
+  experimental: {
+    serverComponentsExternalPackages: ["pdfkit"],   // ← This is the key fix
+  },
 };
 
 export default nextConfig;

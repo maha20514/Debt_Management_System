@@ -34,7 +34,7 @@ export default function RootLayout({ children }: { children: React.ReactNode }) 
           </div>
         </header>
 
-        <main className="pb-12">
+        <main className="container py-8">
           {children}
         </main>
       </body>

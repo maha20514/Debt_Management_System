@@ -51,3 +51,37 @@ h1, h2, h3 {
 .input {
   @apply w-full bg-white border border-slate-300 focus:border-blue-600 focus:ring-4 focus:ring-blue-100 rounded-2xl px-6 py-4 text-lg outline-none;
 }
+/* تحسين المسافات والجدول */
+.container {
+  @apply max-w-7xl mx-auto px-6 lg:px-12;
+}
+
+.card {
+  @apply bg-white shadow-xl border border-slate-100 rounded-3xl overflow-hidden;
+}
+
+/* تحسين الجدول ليكون أنيق ومتجاوب */
+.table-container {
+  @apply overflow-x-auto;
+}
+
+.table {
+  @apply w-full min-w-full;
+}
+
+.table th, .table td {
+  @apply px-6 py-5 text-right;
+}
+
+.table th {
+  @apply text-slate-600 font-semibold bg-slate-50;
+}
+
+.table td {
+  @apply text-slate-900 font-medium;
+}
+
+/* جعل الاسم يظهر بشكل أفضل ومتناسق */
+.name-cell {
+  @apply font-semibold text-slate-900;
+}

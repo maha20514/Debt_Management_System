@@ -62,6 +62,7 @@ export default async function CustomerDetails({ params }: { params: Promise<{ id
                   <th>التاريخ</th>
                   <th>النوع</th>
                   <th>المبلغ</th>
+                  <th>ملف</th>
                 </tr>
               </thead>
               <tbody>
@@ -77,6 +78,17 @@ export default async function CustomerDetails({ params }: { params: Promise<{ id
                     </td>
                     <td className="font-bold text-lg">
                       {t.amount.toLocaleString()} ريال
+                    </td>
+                    <td className="p-2">
+                      {t.type === "فاتورة" && (
+                        <a
+                          href={`/api/invoices/${t._id}/pdf`}
+                          className="text-blue-600 underline"
+                          target="_blank"
+                        >
+                          تحميل PDF
+                        </a>
+                      )}
                     </td>
                   </tr>
                 ))}
