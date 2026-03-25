@@ -15,8 +15,7 @@ const CustomerSchema = new Schema({
   createdAt: { type: Date, default: Date.now }
 });
 
-const Customer = models.Customer || model("Customer", CustomerSchema);
+export const Customer = models.Customer || model("Customer", CustomerSchema);
 
-export default Customer;
 
 

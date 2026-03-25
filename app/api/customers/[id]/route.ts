@@ -1,8 +1,8 @@
 import { NextRequest, NextResponse } from "next/server";
 import { connectDB } from "@/lib/mongodb";
-import Customer  from "@/models/Customer";
-import Invoice from "@/models/Invoice";
-import Payment from "@/models/Payment";
+import {Customer}  from "@/models/Customer";
+import {Invoice} from "@/models/Invoice";
+import {Payment} from "@/models/Payment";
 
 export async function GET(
   req: NextRequest,

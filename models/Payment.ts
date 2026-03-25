@@ -12,5 +12,5 @@ const PaymentSchema = new Schema({
   date: { type: Date, default: Date.now }
 });
 
-const Payment = models.Payment || model("Payment", PaymentSchema);
-export default Payment;
+export const Payment = models.Payment || model("Payment", PaymentSchema);
+ 

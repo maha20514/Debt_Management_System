@@ -4,8 +4,8 @@ import PDFDocument from "pdfkit";
 import path from "path";
 import fs from "fs";
 import { connectDB } from "@/lib/mongodb";
-import Invoice from "@/models/Invoice";
-import Customer from "@/models/Customer";
+import {Invoice} from "@/models/Invoice";
+import {Customer} from "@/models/Customer";
 
 export async function GET(
   req: NextRequest,

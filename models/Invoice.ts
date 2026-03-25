@@ -15,7 +15,5 @@ const InvoiceSchema = new Schema({
   
 },
 { timestamps: true });
+export const Invoice = models.Invoice || model("Invoice", InvoiceSchema);
 
-const Invoice = models.Invoice || model("Invoice", InvoiceSchema);
-
-export default Invoice;

@@ -3,8 +3,8 @@
 
 import { NextRequest as PaymentRequest, NextResponse as PaymentResponse } from "next/server";
 import { connectDB as connectPaymentDB } from "@/lib/mongodb";
-import Payment from "@/models/Payment";
-import Customer from "@/models/Customer";
+import {Payment} from "@/models/Payment";
+import {Customer} from "@/models/Customer";
 
 export async function POST(req: PaymentRequest) {
   try {
