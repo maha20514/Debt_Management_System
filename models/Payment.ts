@@ -1,15 +1,15 @@
-import { Schema as PaymentSchemaType, model as paymentModel, models as paymentModels } from "mongoose";
+import mongoose,  { Schema , model , models  } from "mongoose";
 
 export interface IPayment {
-  customerId: string;
+  customerId: Schema.Types.ObjectId;
   amount: number;
   date: Date;
 }
 
-const PaymentSchema = new PaymentSchemaType<IPayment>({
-  customerId: { type: PaymentSchemaType.Types.ObjectId, ref: "Customer", required: true },
+const PaymentSchema = new Schema<IPayment>({
+  customerId: { type: Schema.Types.ObjectId, ref: "Customer", required: true },
   amount: { type: Number, required: true },
   date: { type: Date, default: Date.now }
 });
 
-export const Payment = paymentModels.Payment || paymentModel<IPayment>("Payment", PaymentSchema);
+export const Payment = models.Payment || model<IPayment>("Payment", PaymentSchema);
