@@ -2,8 +2,8 @@
 import Link from "next/link";
 
 async function getCustomer(id: string) {
-  const res = await fetch(`http://localhost:3000/api/customers/${id}`, { cache: "no-store" });
-  if (!res.ok) return null;
+ const res = await fetch(`${process.env.NEXT_PUBLIC_SITE_URL}/api/customers/${id}`); 
+ if (!res.ok) return null;
   return res.json();
 }
 
