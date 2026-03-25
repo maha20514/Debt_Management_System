@@ -2,8 +2,8 @@
 
 import { NextRequest as InvoiceRequest, NextResponse as InvoiceResponse } from "next/server";
 import { connectDB as connectInvoiceDB } from "@/lib/mongodb";
-import { Invoice } from "@/models/Invoice";
-import { Customer as InvoiceCustomer } from "@/models/Customer";
+import Invoice from "@/models/Invoice";
+import Customer  from "@/models/Customer";
 
 export async function POST(req: InvoiceRequest) {
   try {
@@ -17,7 +17,7 @@ export async function POST(req: InvoiceRequest) {
       description: body.description
     });
 
-    await InvoiceCustomer.findByIdAndUpdate(body.customerId, {
+    await Customer.findByIdAndUpdate(body.customerId, {
       $inc: { totalDebt: body.amount }
     });
 
