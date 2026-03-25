@@ -2,7 +2,7 @@
 import Link from "next/link";
 
 async function getCustomers() {
-  const res = await fetch("http://localhost:3000/api/customers", { cache: "no-store" });
+const res = await fetch(`${process.env.NEXT_PUBLIC_SITE_URL}/api/customers`);
   if (!res.ok) return [];
   const data = await res.json();
   return Array.isArray(data) ? data : [];
