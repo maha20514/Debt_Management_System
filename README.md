@@ -146,7 +146,7 @@ date: Date
 
 ---
 
-## 📸 Screenshots
+<!-- ## 📸 Screenshots
 
 You can add screenshots here after deploying:
 
@@ -156,7 +156,7 @@ You can add screenshots here after deploying:
 /screenshots/invoice.png
 ```
 
----
+--- -->
 
 ## 📦 Future Improvements
 
