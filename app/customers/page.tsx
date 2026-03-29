@@ -8,10 +8,13 @@ export const dynamic = "force-dynamic";
 async function getCustomers() {
   try {
     await connectDB();
+    console.log("✅ DB connected, fetching customers...");
 
     const customers = await Customer.find()
       .sort({ createdAt: -1 })
       .lean();
+
+    console.log(`📊 Found ${customers.length} customers in database`);
 
     return customers.map((c: any) => ({
       id: c._id.toString(),
