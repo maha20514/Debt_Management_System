@@ -1,23 +1,48 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
-export const dynamic = "force-dynamic";
-import { connectDB } from "@/lib/mongodb";
-import { Customer } from "@/models/Customer";
 import Link from "next/link";
 
-interface Props {
-  params: { id: string };
+async function getCustomer(id: string) {
+  try {
+    // Best practice: Call the database function directly instead of fetch (recommended)
+    // But since you want to keep using the API route, here's the robust way:
+
+    const baseUrl = process.env.NEXT_PUBLIC_SITE_URL || 
+                   (process.env.VERCEL_URL ? `https://${process.env.VERCEL_URL}` : 
+                   `http://localhost:${process.env.PORT || 3000}`);
+
+    const res = await fetch(`${baseUrl}/api/customers/${id}`, {
+      cache: "no-store",
+      next: { revalidate: 0 },
+    });
+
+    if (!res.ok) {
+      if (res.status === 404) return null;
+      console.error(`API error: ${res.status}`);
+      return null;
+    }
+
+    const data = await res.json();
+    return data;
+  } catch (error) {
+    console.error("Error fetching customer:", error);
+    return null;
+  }
 }
 
-export default async function CustomerDetails({ params }: Props) {
-  await connectDB();
+export default async function CustomerDetails({
+  params,
+}: {
+  params: Promise<{ id: string }>;
+}) {
+  const { id } = await params;
 
-  // Get the customer by ID
-  const customer = await Customer.findById(params.id).lean();
+  const customer = await getCustomer(id);
 
   if (!customer) {
     return (
       <div className="container py-20 text-center">
         <h2 className="text-3xl font-bold text-red-600">العميل غير موجود</h2>
+        <p className="text-slate-500 mt-4">يرجى التحقق من الرابط أو المحاولة مرة أخرى</p>
       </div>
     );
   }
@@ -36,7 +61,8 @@ export default async function CustomerDetails({ params }: Props) {
         <div className="text-left md:text-right">
           <p className="text-sm font-medium text-slate-500">الرصيد الحالي</p>
           <p className="text-5xl font-bold text-red-600 mt-1">
-            {(customer.totalDebt ?? 0).toLocaleString()} <span className="text-3xl">ريال</span>
+            {Number(customer.totalDebt || 0).toLocaleString()}{" "}
+            <span className="text-3xl">ريال</span>
           </p>
         </div>
       </div>
@@ -63,7 +89,7 @@ export default async function CustomerDetails({ params }: Props) {
           📋 سجل العمليات
         </h3>
 
-        {customer.transactions?.length ? (
+        {customer.transactions?.length > 0 ? (
           <div className="overflow-x-auto">
             <table className="table">
               <thead>
@@ -71,7 +97,6 @@ export default async function CustomerDetails({ params }: Props) {
                   <th>التاريخ</th>
                   <th>النوع</th>
                   <th>المبلغ</th>
-                  <th>ملف</th>
                 </tr>
               </thead>
               <tbody>
@@ -81,31 +106,29 @@ export default async function CustomerDetails({ params }: Props) {
                       {new Date(t.date).toLocaleDateString("ar-SA")}
                     </td>
                     <td>
-                      <span className={`inline-block px-5 py-1.5 rounded-2xl text-sm font-medium ${t.type === "دفعة" ? "bg-emerald-100 text-emerald-700" : "bg-amber-100 text-amber-700"}`}>
+                      <span
+                        className={`inline-block px-5 py-1.5 rounded-2xl text-sm font-medium ${
+                          t.type === "سند" || t.type === "دفعة"
+                            ? "bg-emerald-100 text-emerald-700"
+                            : "bg-amber-100 text-amber-700"
+                        }`}
+                      >
                         {t.type}
                       </span>
                     </td>
                     <td className="font-bold text-lg">
-                      {t.amount.toLocaleString()} ريال
+                      {Number(t.amount || 0).toLocaleString()} ريال
                     </td>
-                    <td className="p-2">
-                      {t.type === "فاتورة" && (
-                        <a
-                          href={`/api/invoices/${t._id}/pdf`}
-                          className="text-blue-600 underline"
-                          target="_blank"
-                        >
-                          تحميل PDF
-                        </a>
-                      )}
-                    </td>
+                    
                   </tr>
                 ))}
               </tbody>
             </table>
           </div>
         ) : (
-          <p className="text-center text-slate-500 py-12 text-xl">لا توجد عمليات بعد</p>
+          <p className="text-center text-slate-500 py-12 text-xl">
+            لا توجد عمليات بعد
+          </p>
         )}
       </div>
     </div>

@@ -1,25 +1,32 @@
-export const dynamic = "force-dynamic";
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import Link from "next/link";
 import { connectDB } from "@/lib/mongodb";
 import { Customer } from "@/models/Customer";
 
+// Force server-side rendering for runtime MongoDB fetch
+export const dynamic = "force-dynamic";
+
+async function getCustomers() {
+  try {
+    await connectDB();
+
+    const customers = await Customer.find().sort({ createdAt: -1 }).lean();
+    return customers.map((c: any) => ({
+      id: c._id.toString(),
+      name: c.name,
+      phone: c.phone,
+      totalDebt: c.totalDebt ?? 0,
+    }));
+  } catch (error) {
+    console.error("Failed to fetch customers:", error);
+    return [];
+  }
+}
+
 export default async function CustomersPage() {
-  // Connect to MongoDB
-  await connectDB();
+  const customers = await getCustomers();
 
-  // Fetch customers from MongoDB
-  const customers = await Customer.find().sort({ createdAt: -1 }).lean();
-
-  // Map data for frontend
-  const mappedCustomers = customers.map((c: any) => ({
-    id: c._id.toString(),
-    name: c.name,
-    phone: c.phone,
-    totalDebt: c.totalDebt ?? 0,
-  }));
-
-  if (!mappedCustomers.length) {
+  if (!customers.length) {
     return (
       <div className="container py-12">
         <div className="card p-12 text-center">
@@ -30,10 +37,7 @@ export default async function CustomersPage() {
           <p className="text-slate-500 text-lg mb-8">
             ابدأ بإضافة أول عميل الآن
           </p>
-          <Link
-            href="/customers/new"
-            className="btn-primary text-lg px-10 py-4"
-          >
+          <Link href="/customers/new" className="btn-primary text-lg px-10 py-4">
             ➕ إضافة عميل جديد
           </Link>
         </div>
@@ -46,15 +50,9 @@ export default async function CustomersPage() {
       <div className="flex flex-col sm:flex-row justify-between items-start sm:items-center gap-6 mb-10">
         <div>
           <h1 className="text-4xl font-bold text-slate-900">قائمة العملاء</h1>
-          <p className="text-slate-500 mt-2 text-lg">
-            إدارة جميع العملاء والرصيد
-          </p>
+          <p className="text-slate-500 mt-2 text-lg">إدارة جميع العملاء والرصيد</p>
         </div>
-
-        <Link
-          href="/customers/new"
-          className="btn-primary text-lg px-8 py-4"
-        >
+        <Link href="/customers/new" className="btn-primary text-lg px-8 py-4">
           + إضافة عميل جديد
         </Link>
       </div>
@@ -70,37 +68,22 @@ export default async function CustomersPage() {
                 <th className="w-32"></th>
               </tr>
             </thead>
-
             <tbody>
-              {mappedCustomers.map((c: any) => (
-                <tr
-                  key={c.id}
-                  className="hover:bg-slate-50 transition-colors"
-                >
+              {customers.map((c: any) => (
+                <tr key={c.id} className="hover:bg-slate-50 transition-colors">
                   <td className="font-semibold text-slate-900">
-                    <Link
-                      href={`/customers/${c.id}`}
-                      className="hover:text-blue-600 transition-colors"
-                    >
+                    <Link href={`/customers/${c.id}`} className="hover:text-blue-600">
                       {c.name}
                     </Link>
                   </td>
-
-                  <td className="text-slate-600 font-medium">
-                    {c.phone}
-                  </td>
-
+                  <td className="text-slate-600 font-medium">{c.phone}</td>
                   <td>
                     <span className="font-bold text-xl text-red-600">
                       {c.totalDebt.toLocaleString()} ريال
                     </span>
                   </td>
-
                   <td>
-                    <Link
-                      href={`/customers/${c.id}`}
-                      className="text-blue-600 hover:text-blue-700 font-medium flex items-center gap-1"
-                    >
+                    <Link href={`/customers/${c.id}`} className="text-blue-600 hover:text-blue-700 font-medium flex items-center gap-1">
                       عرض التفاصيل →
                     </Link>
                   </td>
