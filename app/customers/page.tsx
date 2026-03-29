@@ -3,19 +3,21 @@ import Link from "next/link";
 import { connectDB } from "@/lib/mongodb";
 import { Customer } from "@/models/Customer";
 
-// Force server-side rendering for runtime MongoDB fetch
 export const dynamic = "force-dynamic";
 
 async function getCustomers() {
   try {
     await connectDB();
 
-    const customers = await Customer.find().sort({ createdAt: -1 }).lean();
+    const customers = await Customer.find()
+      .sort({ createdAt: -1 })
+      .lean();
+
     return customers.map((c: any) => ({
       id: c._id.toString(),
       name: c.name,
       phone: c.phone,
-      totalDebt: c.totalDebt ?? 0,
+      totalDebt: Number(c.totalDebt || 0),
     }));
   } catch (error) {
     console.error("Failed to fetch customers:", error);
@@ -37,7 +39,10 @@ export default async function CustomersPage() {
           <p className="text-slate-500 text-lg mb-8">
             ابدأ بإضافة أول عميل الآن
           </p>
-          <Link href="/customers/new" className="btn-primary text-lg px-10 py-4">
+          <Link 
+            href="/customers/new" 
+            className="btn-primary text-lg px-10 py-4"
+          >
             ➕ إضافة عميل جديد
           </Link>
         </div>
@@ -52,7 +57,10 @@ export default async function CustomersPage() {
           <h1 className="text-4xl font-bold text-slate-900">قائمة العملاء</h1>
           <p className="text-slate-500 mt-2 text-lg">إدارة جميع العملاء والرصيد</p>
         </div>
-        <Link href="/customers/new" className="btn-primary text-lg px-8 py-4">
+        <Link 
+          href="/customers/new" 
+          className="btn-primary text-lg px-8 py-4"
+        >
           + إضافة عميل جديد
         </Link>
       </div>
@@ -72,7 +80,10 @@ export default async function CustomersPage() {
               {customers.map((c: any) => (
                 <tr key={c.id} className="hover:bg-slate-50 transition-colors">
                   <td className="font-semibold text-slate-900">
-                    <Link href={`/customers/${c.id}`} className="hover:text-blue-600">
+                    <Link 
+                      href={`/customers/${c.id}`} 
+                      className="hover:text-blue-600"
+                    >
                       {c.name}
                     </Link>
                   </td>
@@ -83,7 +94,10 @@ export default async function CustomersPage() {
                     </span>
                   </td>
                   <td>
-                    <Link href={`/customers/${c.id}`} className="text-blue-600 hover:text-blue-700 font-medium flex items-center gap-1">
+                    <Link 
+                      href={`/customers/${c.id}`} 
+                      className="text-blue-600 hover:text-blue-700 font-medium flex items-center gap-1"
+                    >
                       عرض التفاصيل →
                     </Link>
                   </td>
