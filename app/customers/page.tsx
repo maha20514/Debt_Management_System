@@ -15,12 +15,12 @@ async function getCustomers() {
 
     return customers.map((c: any) => ({
       id: c._id.toString(),
-      name: c.name,
-      phone: c.phone,
+      name: c.name || "",
+      phone: c.phone || "",
       totalDebt: Number(c.totalDebt || 0),
     }));
   } catch (error) {
-    console.error("Failed to fetch customers:", error);
+    console.error("❌ Failed to fetch customers:", error);
     return [];
   }
 }
@@ -28,7 +28,7 @@ async function getCustomers() {
 export default async function CustomersPage() {
   const customers = await getCustomers();
 
-  if (!customers.length) {
+  if (!customers || customers.length === 0) {
     return (
       <div className="container py-12">
         <div className="card p-12 text-center">
