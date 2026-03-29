@@ -1,4 +1,5 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+export const dynamic = "force-dynamic";
 import { connectDB } from "@/lib/mongodb";
 import { Customer } from "@/models/Customer";
 import Link from "next/link";
