@@ -3,30 +3,22 @@ import Link from "next/link";
 import { connectDB } from "@/lib/mongodb";
 import { Customer } from "@/models/Customer";
 
-async function getCustomers() {
-  try {
-    await connectDB();
-
-    const customers = await Customer.find()
-      .sort({ createdAt: -1 })
-      .lean();
-
-    return customers.map((c: any) => ({
-      id: c._id.toString(),
-      name: c.name,
-      phone: c.phone,
-      totalDebt: c.totalDebt ?? 0,
-    }));
-  } catch (error) {
-    console.error("Failed to fetch customers:", error);
-    return [];
-  }
-}
-
 export default async function CustomersPage() {
-  const customers = await getCustomers();
+  // Connect to MongoDB
+  await connectDB();
 
-  if (!customers.length) {
+  // Fetch customers from MongoDB
+  const customers = await Customer.find().sort({ createdAt: -1 }).lean();
+
+  // Map data for frontend
+  const mappedCustomers = customers.map((c: any) => ({
+    id: c._id.toString(),
+    name: c.name,
+    phone: c.phone,
+    totalDebt: c.totalDebt ?? 0,
+  }));
+
+  if (!mappedCustomers.length) {
     return (
       <div className="container py-12">
         <div className="card p-12 text-center">
@@ -79,7 +71,7 @@ export default async function CustomersPage() {
             </thead>
 
             <tbody>
-              {customers.map((c: any) => (
+              {mappedCustomers.map((c: any) => (
                 <tr
                   key={c.id}
                   className="hover:bg-slate-50 transition-colors"
@@ -99,7 +91,7 @@ export default async function CustomersPage() {
 
                   <td>
                     <span className="font-bold text-xl text-red-600">
-                      {(c.totalDebt ?? 0).toLocaleString()} ريال
+                      {c.totalDebt.toLocaleString()} ريال
                     </span>
                   </td>
 

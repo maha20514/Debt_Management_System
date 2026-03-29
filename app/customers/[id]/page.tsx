@@ -1,16 +1,17 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
+import { connectDB } from "@/lib/mongodb";
+import { Customer } from "@/models/Customer";
 import Link from "next/link";
 
-async function getCustomer(id: string) {
-const res = await fetch(`${process.env.NEXT_PUBLIC_SITE_URL}/api/customers/${id}`, {
-  cache: 'no-store',
-});if (!res.ok) return null;
-  return res.json();
+interface Props {
+  params: { id: string };
 }
 
-export default async function CustomerDetails({ params }: { params: Promise<{ id: string }> }) {
-  const { id } = await params;
-  const customer = await getCustomer(id);
+export default async function CustomerDetails({ params }: Props) {
+  await connectDB();
+
+  // Get the customer by ID
+  const customer = await Customer.findById(params.id).lean();
 
   if (!customer) {
     return (
@@ -34,17 +35,23 @@ export default async function CustomerDetails({ params }: { params: Promise<{ id
         <div className="text-left md:text-right">
           <p className="text-sm font-medium text-slate-500">الرصيد الحالي</p>
           <p className="text-5xl font-bold text-red-600 mt-1">
-            {customer.totalDebt.toLocaleString()} <span className="text-3xl">ريال</span>
+            {(customer.totalDebt ?? 0).toLocaleString()} <span className="text-3xl">ريال</span>
           </p>
         </div>
       </div>
 
       {/* الأزرار السريعة */}
       <div className="flex flex-wrap gap-4">
-        <Link href={`/customers/${customer._id}/invoice`} className="btn-primary text-lg flex-1 md:flex-none justify-center py-4">
+        <Link
+          href={`/customers/${customer._id}/invoice`}
+          className="btn-primary text-lg flex-1 md:flex-none justify-center py-4"
+        >
           📄 إصدار فاتورة جديدة
         </Link>
-        <Link href={`/customers/${customer._id}/payment`} className="btn-success text-lg flex-1 md:flex-none justify-center py-4">
+        <Link
+          href={`/customers/${customer._id}/payment`}
+          className="btn-success text-lg flex-1 md:flex-none justify-center py-4"
+        >
           💰 تسجيل دفعة
         </Link>
       </div>
